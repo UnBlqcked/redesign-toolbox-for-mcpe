@@ -18,12 +18,19 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/window_background_fallback"
-    android:id="@+id/__tmp_window__"
-    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".OhNoseActivity">
+
+    <ImageView android:id="@+id/window_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:scaleType="centerCrop"
+        android:src="@color/window_background_fallback"
+        tools:ignore="ContentDescription" />
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"

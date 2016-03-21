@@ -17,14 +17,12 @@
 
 package dev.hellpie.apps.redesign.toolbox;
 
-import android.annotation.TargetApi;
 import android.app.WallpaperManager;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import android.widget.ImageView;
 
 public class OhNoseActivity extends AppCompatActivity {
 
@@ -33,23 +31,17 @@ public class OhNoseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_error);
 
-        // Fuck the 1 API level Toolbox misses, user gets dark grey on obsolete pieces of shit.
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) applyLandscapeShadow();
+        applyLandscapeShadow();
     }
 
-    /**
-     * WARNING: Screen stays stretched because Wallpaper returns what is often
-     * the current, portrait, orientation of the home screen. Too lazy to do the
-     * cut and resize job, but should be easy with a Bitmap.
-     */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN) // Burn in hell Ice Crap Sandshit
+
     private void applyLandscapeShadow() {
         Drawable wallpaper = WallpaperManager.getInstance(this).getDrawable();
         wallpaper.setColorFilter(0xff777777, PorterDuff.Mode.MULTIPLY);
 
-        View window = findViewById(R.id.__tmp_window__);
-        if (window != null) {
-            window.setBackground(wallpaper);
+        ImageView background = (ImageView) findViewById(R.id.window_background);
+        if (background != null) {
+            background.setImageDrawable(wallpaper);
         }
     }
 }
