@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2016 Diego Rossi (@_HellPie)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/window_background_fallback"
+    android:id="@+id/__tmp_window__"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".OhNoseActivity">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/card_background"
+        app:cardCornerRadius="0dp"
+        android:layout_centerVertical="true">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_gravity="top"
+            android:background="?attr/colorAccent" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="24dp"
+            android:padding="8dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="72dp"
+            android:layout_marginLeft="72dp"
+            android:layout_marginEnd="72dp"
+            android:layout_marginRight="72dp">
+
+            <TextView
+                android:id="@+id/error_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:text="@string/error_example_title" />
+
+            <View
+                android:id="@+id/_card_title_div"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_below="@id/error_title"
+                android:background="?attr/colorAccent" />
+
+            <TextView
+                android:id="@+id/error_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/_card_title_div"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:text="@string/error_example_message" />
+
+            <Button
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:id="@+id/error_button_continue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/error_message"
+                android:text="@string/error_example_button" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

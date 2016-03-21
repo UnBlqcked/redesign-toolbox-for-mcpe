@@ -1,0 +1,142 @@
+/*
+ * Copyright 2016 Diego Rossi (@_HellPie)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "24.0.0 rc2"
+
+    /*
+     * SELF-INCREMENTING VERSION CODES AND NAMES
+     * Copyright (c) Diego "@_HellPie" Rossi (2015-2016)
+     */
+    def versioningFile = file('version.properties')
+    if(versioningFile.canRead()) {
+        def Properties versionProperties = new Properties()
+        versionProperties.load(new FileInputStream(versioningFile))
+
+        // Recognize release builds based on Gradle task name
+        def task = gradle.startParameter.taskNames
+        def release = ('assemble' in task || 'assembleRelease' in task || 'aR' in task)
+
+        def verMajor = versionProperties['VERSION_MAJOR'].toInteger() + (release ? 1 : 0)
+        def verMinor = versionProperties['VERSION_MINOR'].toInteger()
+        def verRevision = versionProperties['VERSION_REVISION'].toInteger()
+        def verBuild = versionProperties['VERSION_BUILD'].toInteger() + 1
+
+        if(verBuild % 100 == 0 && verBuild != 0) {
+            verRevision += 1
+        }
+
+        if(verRevision % 10 == 0 && verRevision != 0) {
+            verRevision = 0
+            verMinor += 1
+        }
+
+        // Store all the updated properties back into the file
+        versionProperties['VERSION_MAJOR'] = verMajor.toString()
+        versionProperties['VERSION_MINOR'] = verMinor.toString()
+        versionProperties['VERSION_REVISION'] = verRevision.toString()
+        versionProperties['VERSION_BUILD'] = verBuild.toString()
+        versionProperties.store(versioningFile.newWriter(), null)
+
+        // Build actual versionCode and versionName from read values
+        def int verCode = verMajor * 100 + verMinor
+        def String verName = "${verMajor}.${verMinor}.${verRevision}.${verBuild}"
+
+        // If debug I like to see the builder machine infos
+        if(!release) {
+            verName += " " + System.getenv('USER') + "@" + InetAddress.getLocalHost().getHostName()
+        }
+
+        defaultConfig {
+            applicationId "dev.hellpie.apps.redesign.toolbox"
+            minSdkVersion 15
+            targetSdkVersion 23
+            versionCode verCode
+            versionName verName
+        }
+
+    } else {
+        throw new GradleException("Unable to read version.properties!")
+    }
+
+    /*
+     * SELF-SIGNING APPLICATION
+     * Copyright (c) Diego "@_HellPie" Rossi (2015-2016)
+     */
+    def signingFile = file('../../../signing.properties')
+    signingConfigs {
+        if(signingFile.canRead()) {
+            def Properties signingProperties = new Properties()
+            signingProperties.load(new FileInputStream(signingFile))
+
+            debug {
+                storeFile file(signingProperties['KEY_DEBUG_PATH'])
+                storePassword signingProperties['KEY_DEBUG_PASSWORD']
+                keyAlias signingProperties['KEY_DEBUG_ALIAS_USERNAME']
+                keyPassword signingProperties['KEY_DEBUG_ALIAS_PASSWORD']
+            }
+
+            release {
+                storeFile file(signingProperties['KEY_RELEASE_PATH'])
+                storePassword signingProperties['KEY_RELEASE_PASSWORD']
+                keyAlias signingProperties['KEY_RELEASE_ALIAS_USERNAME']
+                keyPassword signingProperties['KEY_RELEASE_ALIAS_PASSWORD']
+            }
+        } else {
+            throw new GradleException("Unable to read signing.properties!")
+        }
+
+        missing {
+            storeFile file('../missing.jks')
+            storePassword 'REAL_KEYSTORE_NOT_FOUND'
+            keyAlias 'REAL_KEYSTORE_NOT_FOUND'
+            keyPassword 'REAL_KEYSTORE_NOT_FOUND'
+        }
+    }
+
+    buildTypes {
+        debug {
+            if(signingFile.canRead()) {
+                signingConfig signingConfigs.debug
+            } else {
+                signingConfig signingConfigs.missing
+            }
+        }
+
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if(signingFile.canRead()) {
+                signingConfig signingConfigs.release
+            } else {
+                signingConfig signingConfigs.missing
+            }
+        }
+    }
+    dexOptions {
+        incremental true
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:cardview-v7:23.2.1'
+}
